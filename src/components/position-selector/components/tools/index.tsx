@@ -1,7 +1,7 @@
 import React, { FC, useState, useEffect, useRef } from "react";
 import { useMap } from "@pansy/react-amap";
-import PlusOutlined from '@sensoro-design/icons/PlusOutlined';
-import MinusOutlined from '@sensoro-design/icons/MinusOutlined';
+import PlusOutlined from "@sensoro-design/icons/PlusOutlined";
+import MinusOutlined from "@sensoro-design/icons/MinusOutlined";
 import { LngLatArray } from "../../../../map/types";
 import { Tooltip, Popover } from "antd";
 import classNames from "@pansy/classnames";
@@ -38,22 +38,14 @@ export const Tools: FC<ToolsProps> = ({ prefixCLs, small = false }) => {
       try {
         map?.plugin?.(["AMap.TileLayer"], () => {
           //@ts-ignore-next-line
-          const wms = new AMap.TileLayer.WMTS({
-            url: "http://t4.tianditu.gov.cn/img_w/wmts",
-            blend: false,
-            tileSize: 256,
-            params: {
-              Layer: "img",
-              Version: "1.0.0",
-              Format: "tiles",
-              TileMatrixSet: "w",
-              STYLE: "default",
-              tk: "a7c6dbbf2a709f13c7b496cda400191c",
-            },
+          const tileLayer: any = new AMap.TileLayer({
+            getTileUrl: `http://192.168.0.108:9001/bigemap.axddmqiw/tiles/[z]/[x]/[y].png?access_token=pk.eyJ1IjoiY3VzXzJ0OHRtZnIwIiwiYSI6Ijdidnhkc3Nrb20weDN1dHk5dng5aXY3NXQiLCJ0IjoxfQ.JZVdpmEsHY8H7jbrp6vVIM6qJOD-voGIkGiPI_nJUQk`,
+            zooms: [2, 20],
+            zIndex: 10,
           });
 
-          sateLite.current = wms;
-          map.add([wms]);
+          sateLite.current = tileLayer;
+          map.add(tileLayer);
           //wms?.setMap(map);
         });
       } catch (e) {
@@ -116,9 +108,11 @@ export const Tools: FC<ToolsProps> = ({ prefixCLs, small = false }) => {
           trigger={["hover"]}
           getPopupContainer={() => themeContent?.current as any}
         >
-          <div className={classNames(`${prefixCLs}-theme`, {
-            [`${prefixCLs}-theme-small`]: !!small
-          })}>
+          <div
+            className={classNames(`${prefixCLs}-theme`, {
+              [`${prefixCLs}-theme-small`]: !!small,
+            })}
+          >
             <div
               style={{
                 backgroundImage: `url(${getCurrentImg(mapTheme)})`,
